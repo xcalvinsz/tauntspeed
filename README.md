@@ -104,3 +104,50 @@ native void SetTauntSpeed(int client, float value);
 native void RemoveTauntSpeed(int client);
 ```
 These natives can be used to set/remove taunt speeds on client
+
+## Taunt Index List
+```
+High Five Taunt - 167
+Replay Taunt - 438
+Laugh Taunt - 463
+Meet the Medic Heroic Taunt - 477
+Shred Alert Taunt - 1015
+Square Dance Taunt - 1106
+Flippin' Awesome Taunt - 1107
+Buy A Life Taunt - 1108
+Results Are In Taunt 1109
+RPS Taunt - 1110
+Skullcracker Taunt - 1111
+Party Trick Taunt - 1112
+Fresh Brewed Victory Taunt - 1113
+Spent Well Spirits Taunt - 1114
+Rancho Relaxo Taunt - 1115
+I See You Taunt - 1116
+Battin' a Thousand Taunt - 1117
+Conga Taunt - 1118
+Deep Fried Desire Taunt - 1119
+Oblooterated Taunt - 1120
+The Kazotsky Kick - 1157
+Pool Party Taunt - 30570
+The Boston Breakdance Taunt - 30572
+The Killer Solo Taunt - 30609
+Most Wanted Taunt - 30614
+The Proletariat Posedown Taunt - 30616
+The Box Trot Taunt - 30615
+The Kazotsky Kick Taunt - 1157
+The Burstchester Taunt - 30621
+Requiem Taunt - 30673
+Zooming Broom Taunt - 30672
+Mannrobics Taunt - 1162
+Bad Pipes Taunt - 30671
+Bucking Bronco Taunt - 30618
+Disco Fever Taunt - 30762
+Balloonibouncer Taunt - 30763
+The Fubar Fanfare Taunt - 30761
+The Carlton Taunt - 1168
+The Victory Lap Taunt - 1172
+The Second Rate Sorcery Taunt - 30816
+The Table Tantrum taunt - 1174
+The Scotsmann's Stagger Taunt - 30840
+The Didgeridrongo Taunt - 30839
+```
