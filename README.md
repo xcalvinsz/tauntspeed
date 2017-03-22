@@ -1,6 +1,6 @@
 # TF2 Taunt Speed Modifier
 
-[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/QJzz6oUtAMk/0.jpg)](http://www.youtube.com/watch?v=QJzz6oUtAMk)
+[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/4yEXCQFd-Ps/0.jpg)](http://www.youtube.com/watch?v=4yEXCQFd-Ps)
 
 ## Description
 This plugin will change the taunt animation/kill speed
