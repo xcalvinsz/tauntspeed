@@ -1,7 +1,9 @@
 #pragma semicolon 1
 
-#define PLUGIN_VERSION "2.0"
+#define PLUGIN_VERSION "2.1"
 #define MAX_STRING_LENGTH 2048	//max string length for keyvalue string, if for some reason you run out of space then increase this value
+#define ATTRIBUTE_GESTURE 201
+#define ATTRIBUTE_VOICE 2048
 
 #include <tf2>
 #include <tf2attributes>
@@ -59,10 +61,24 @@ public void OnPluginStart()
 	}
 }
 
+public void OnPluginEnd()
+{
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (!IsClientInGame(i))
+			continue;
+		RemoveGestureSpeed(i);
+		RemoveVoicePitch(i);
+	}
+}
+
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
-	CreateNative("SetTauntSpeed", Native_SetTauntSpeed);
-	CreateNative("RemoveTauntSpeed", Native_RemoveTauntSpeed);
+	CreateNative("SetGestureSpeed", Native_SetGestureSpeed);
+	CreateNative("SetVoicePitch", Native_SetVoicePitch);
+	CreateNative("SetTauntAttackSpeed", Native_SetTauntAttackSpeed);
+	CreateNative("RemoveGestureSpeed", Native_RemoveGestureSpeed);
+	CreateNative("RemoveVoicePitch", Native_RemoveVoicePitch);
 	return APLRes_Success;
 }
 
@@ -120,17 +136,37 @@ public void OnClientPostAdminCheck(int client)
 	g_bTauntSpeedAltered[client] = false;
 }
 
-public int Native_SetTauntSpeed(Handle plugin, int numParams)
+public int Native_SetGestureSpeed(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
 	float value = view_as<float>(GetNativeCell(2));
-	SetTauntSpeed(client, value);
+	SetGestureSpeed(client, value);
 }
 
-public int Native_RemoveTauntSpeed(Handle plugin, int numParams)
+public int Native_SetVoicePitch(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
-	RemoveTauntSpeed(client);
+	float value = view_as<float>(GetNativeCell(2));
+	SetVoicePitch(client, value);
+}
+
+public int Native_SetTauntAttackSpeed(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+	float value = view_as<float>(GetNativeCell(2));
+	SetTauntAttackSpeed(client, value);
+}
+
+public int Native_RemoveGestureSpeed(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+	RemoveGestureSpeed(client);
+}
+
+public int Native_RemoveVoicePitch(Handle plugin, int numParams)
+{
+	int client = GetNativeCell(1);
+	RemoveVoicePitch(client);
 }
 
 public Action Command_TauntSpeed(int client, int args)
@@ -166,6 +202,10 @@ public Action Command_TauntSpeed(int client, int args)
 		if(1 <= target_list[i] <= MaxClients && IsClientInGame(target_list[i]))
 		{
 			g_flTauntSpeed[target_list[i]] = value;
+			if (value != 1.0)
+				SetGestureSpeed(target_list[i], value);
+			else
+				RemoveGestureSpeed(target_list[i]);
 		}
 	}
 	
@@ -219,9 +259,15 @@ public int Menu_Handler(Menu MenuHandle, MenuAction action, int client, int num)
 		float flSpeed = StringToFloat(buffer);
 		g_flTauntSpeed[client] = flSpeed;
 		if (flSpeed != 1.0)
+		{
+			SetGestureSpeed(client, flSpeed);
 			CPrintToChat(client, "{green}[SM] {orange}You have set your taunt speed to %.0f%%", flSpeed * 100);
+		}
 		else
+		{
+			RemoveGestureSpeed(client);
 			CPrintToChat(client, "{green}[SM] {orange}You have set your taunt speed to normal: %.0f%%", (g_bFlagAccess[client] ? g_cSpeed.FloatValue : flSpeed) * 100);
+		}
 	}
 	else if (action == MenuAction_End)
 		delete MenuHandle;
@@ -248,12 +294,14 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 			
 		if (g_flTauntSpeed[client] != 1.0)
 		{
-			SetTauntSpeed(client, g_flTauntSpeed[client]);
+			SetTauntAttackSpeed(client, g_flTauntSpeed[client]);
+			SetVoicePitch(client, g_flTauntSpeed[client]);
 			g_bTauntSpeedAltered[client] = true;
 		}
 		else if (g_bFlagAccess[client])
 		{
-			SetTauntSpeed(client, g_cSpeed.FloatValue);
+			SetTauntAttackSpeed(client, g_cSpeed.FloatValue);
+			SetVoicePitch(client, g_cSpeed.FloatValue);
 			g_bTauntSpeedAltered[client] = true;
 		}
 	}
@@ -265,24 +313,34 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 	{
 		if (g_bTauntSpeedAltered[client])
 		{
-			RemoveTauntSpeed(client);
+			RemoveVoicePitch(client);
 			g_bTauntSpeedAltered[client] = false;
 		}
 	}
 }
 
-public void SetTauntSpeed(int client, float speed)
+public void SetGestureSpeed(int client, float speed)
 {
-	TF2Attrib_SetByDefIndex(client, 201, speed);
-	TF2Attrib_SetByDefIndex(client, 2048, speed);
-	
-	if (speed < 0.6)
-	{
-		//Setting it below 0.6 causes animation to end faster than the attack time so we adjust the attack time
-		//Probrobly a hidden value that can be changed to set the animation end time
-		speed += 0.6 - speed;
-	}
-	
+	TF2Attrib_SetByDefIndex(client, ATTRIBUTE_GESTURE, speed);
+}
+
+public void SetVoicePitch(int client, float pitch)
+{
+	TF2Attrib_SetByDefIndex(client, ATTRIBUTE_VOICE, pitch);
+}
+
+public void RemoveGestureSpeed(int client)
+{
+	TF2Attrib_RemoveByDefIndex(client, ATTRIBUTE_GESTURE);
+}
+
+public void RemoveVoicePitch(int client)
+{
+	TF2Attrib_RemoveByDefIndex(client, ATTRIBUTE_VOICE);
+}
+
+public void SetTauntAttackSpeed(int client, float speed)
+{
 	float flTauntAttackTime = GetEntDataFloat(client, g_iOffset);
 	float flCurrentTime = GetGameTime();
 	float flNextTauntAttackTime = flCurrentTime + ((flTauntAttackTime - flCurrentTime) / speed);
@@ -299,12 +357,6 @@ public void SetTauntSpeed(int client, float speed)
 	}
 }
 
-public void RemoveTauntSpeed(int client)
-{
-	TF2Attrib_RemoveByDefIndex(client, 201);
-	TF2Attrib_RemoveByDefIndex(client, 2048);
-}
-
 public Action Timer_SetNextAttackTime(Handle timer, DataPack hPack)
 {
 	hPack.Reset();
@@ -318,7 +370,6 @@ public Action Timer_SetNextAttackTime(Handle timer, DataPack hPack)
 	else if (g_flLastAttackTime[client] > 0.0 && flTauntAttackTime == 0.0)
 	{
 		g_flLastAttackTime[client] = 0.0;
-		CreateTimer(0.5, Timer_DelayRemoval, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		return Plugin_Stop;
 	}
 	else
@@ -330,12 +381,6 @@ public Action Timer_SetNextAttackTime(Handle timer, DataPack hPack)
 		g_flLastAttackTime[client] = flNextTauntAttackTime;
 	}
 	return Plugin_Continue;
-}
-
-public Action Timer_DelayRemoval(Handle timer, int userid)
-{
-	int client = GetClientOfUserId(userid);
-	TF2_RemoveCondition(client, TFCond_Taunting);
 }
 
 bool LookupOffset(int &iOffset, const char[] strClass, const char[] strProp)
@@ -433,16 +478,4 @@ void SetupTauntExcludeConfig()
 			g_hArrayTaunt.Push(StringToInt(sTauntSplitIndex[j]));
 		}
 	}
-	/*
-	for (int j = 0; j < g_hArrayWeapon.Length; j++)
-	{
-		int weapon_index = g_hArrayWeapon.Get(j);
-		PrintToServer("%d", weapon_index);
-	}
-	
-	for (int j = 0; j < g_hArrayTaunt.Length; j++)
-	{
-		int taunt_index = g_hArrayTaunt.Get(j);
-		PrintToServer("%d", taunt_index);
-	}*/
 }
