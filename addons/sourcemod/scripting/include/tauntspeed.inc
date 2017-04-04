@@ -4,18 +4,43 @@
 #define _tauntspeed_included_
  
 /**
- * Sets the taunt speed on client given the vale
+ * Sets the taunt gesture speed on client
  *
  * @param client	An integer.
  * @param value		A float.
  * @return
  */
-native void SetTauntSpeed(int client, float value);
+native void SetGestureSpeed(int client, float value);
 
 /**
- * Removes the taunt speed on client
+ * Sets the voice pitch on client
  *
  * @param client 	An integer.
  * @return
  */
-native void RemoveTauntSpeed(int client);
+native void SetVoicePitch(int client, float value);
+
+/**
+ * Sets the taunt attack speed on client
+ * Should be used on the TF2_OnConditionAdded forward
+ *
+ * @param client 	An integer.
+ * @return
+ */
+native void SetTauntAttackSpeed(int client, float value);
+
+/**
+ * Removes the taunt gesture speed on client
+ *
+ * @param client 	An integer.
+ * @return
+ */
+native void RemoveGestureSpeed(int client);
+
+/**
+ * Removes the voice pitch on client
+ *
+ * @param client 	An integer.
+ * @return
+ */
+native void RemoveVoicePitch(int client);

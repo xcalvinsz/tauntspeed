@@ -11,7 +11,7 @@
 
 #pragma newdecls required
 
-ConVar g_cEnabled, g_cFlag, g_cSpeed;
+ConVar g_cEnabled, g_cFlag, g_cSpeed, g_cTauntAttack, g_cVoice;
 int g_iOffset;
 float g_flLastAttackTime[MAXPLAYERS + 1];
 bool g_bFlagAccess[MAXPLAYERS + 1];
@@ -34,6 +34,8 @@ public void OnPluginStart()
 	g_cEnabled = CreateConVar("sm_tauntspeed_enabled", "1", "Enables/Disables Taunt Speed Modifier");
 	g_cFlag = CreateConVar("sm_tauntspeed_flag", "0", "Enable taunt speed on players with the given flag");
 	g_cSpeed = CreateConVar("sm_tauntspeed_speed", "2.0", "The speed of taunt if player has the flag given in sm_tauntspeed_flag");
+	g_cTauntAttack = CreateConVar("sm_tauntspeed_attack", "1", "Allow taunt attack timing to be changed with the taunt speed");
+	g_cVoice = CreateConVar("sm_tauntspeed_voice", "1", "Allow voice pitch to be changed with taunt speed");
 	
 	RegAdminCmd("sm_tauntspeed", Command_TauntSpeed, ADMFLAG_GENERIC, "Enables Taunt Speed on players.");
 	RegAdminCmd("sm_tauntspeedme", Command_TauntSpeedMe, ADMFLAG_GENERIC, "Enable Taunt Speed on yourself.");
@@ -209,10 +211,12 @@ public Action Command_TauntSpeed(int client, int args)
 		}
 	}
 	
-	if (tn_is_ml)
-		CShowActivity2(client, "{green}[SM] ", "{orange}%N has set %t taunt speed to %.0f%%.", client, target_name, value * 100);
-	else
-		CShowActivity2(client, "{green}[SM] ", "{orange}%N has set %s taunt speed to %.0f%%", client, target_name, value * 100);
+	CShowActivity2(client, "{green}[SM] ", "{orange}%N has set %s taunt speed to %.0f%%.", client, tn_is_ml ? "%%t" : "%%s", target_name, value * 100);
+	
+	//if (tn_is_ml)
+	//	CShowActivity2(client, "{green}[SM] ", "{orange}%N has set %t taunt speed to %.0f%%.", client, target_name, value * 100);
+	//else
+	//	CShowActivity2(client, "{green}[SM] ", "{orange}%N has set %s taunt speed to %.0f%%", client, target_name, value * 100);
 		
 	return Plugin_Handled;
 }
@@ -224,11 +228,11 @@ public Action Command_TauntSpeedMe(int client, int args)
 		ReplyToCommand(client, "[SM] This plugin is disabled.");
 		return Plugin_Handled;
 	}	
-	OpenTauntMenu(client);
+	DisplayMenuHandle(client);
 	return Plugin_Handled;
 }
 
-void OpenTauntMenu(int client)
+void DisplayMenuHandle(int client)
 {
 	Menu menu = new Menu(Menu_Handler);
 	menu.SetTitle("Taunt Speed Menu");
@@ -291,17 +295,21 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 		int taunt_index = GetEntProp(client, Prop_Send, "m_iTauntItemDefIndex");
 		if (g_hArrayTaunt.FindValue(taunt_index) != -1)
 			return;
-			
+		
 		if (g_flTauntSpeed[client] != 1.0)
 		{
-			SetTauntAttackSpeed(client, g_flTauntSpeed[client]);
-			SetVoicePitch(client, g_flTauntSpeed[client]);
+			if (g_cTauntAttack.BoolValue)
+				SetTauntAttackSpeed(client, g_flTauntSpeed[client]);
+			if (g_cVoice.BoolValue)
+				SetVoicePitch(client, g_flTauntSpeed[client]);
 			g_bTauntSpeedAltered[client] = true;
 		}
 		else if (g_bFlagAccess[client])
 		{
-			SetTauntAttackSpeed(client, g_cSpeed.FloatValue);
-			SetVoicePitch(client, g_cSpeed.FloatValue);
+			if (g_cTauntAttack.BoolValue)
+				SetTauntAttackSpeed(client, g_cSpeed.FloatValue);
+			if (g_cVoice.BoolValue)
+				SetVoicePitch(client, g_cSpeed.FloatValue);
 			g_bTauntSpeedAltered[client] = true;
 		}
 	}
