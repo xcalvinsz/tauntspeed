@@ -16,6 +16,8 @@ Requires Sourcemod 1.8+ and Metamod 1.10+
 sm_tauntspeed_enabled - [1/0] - Enables/Disables Taunt Speed Modifier
 sm_tauntspeed_flag - Enable taunt speed on players with the given flag [0 - OFF, 1 - PUBLIC, FLAG (https://wiki.alliedmods.net/Adding_Admins_(SourceMod)#Levels)]
 sm_tauntspeed_speed - The speed of taunt if player has the flag given in sm_tauntspeed_flag
+sm_tauntspeed_attack - Allow taunt attack timing to be changed with the taunt speed
+sm_tauntspeed_voice - Allow voice pitch to be changed with taunt speed
 ```
 
 ## Commands
@@ -87,21 +89,46 @@ Here you can exclude certain weapon taunts or action taunts
 ## Natives
 ```
 /**
- * Sets the taunt speed on client given the vale
+ * Sets the taunt gesture speed on client
  *
  * @param client	An integer.
  * @param value		A float.
  * @return
  */
-native void SetTauntSpeed(int client, float value);
+native void SetGestureSpeed(int client, float value);
 
 /**
- * Removes the taunt speed on client
+ * Sets the voice pitch on client
  *
  * @param client 	An integer.
  * @return
  */
-native void RemoveTauntSpeed(int client);
+native void SetVoicePitch(int client, float value);
+
+/**
+ * Sets the taunt attack speed on client
+ * Should be used on the TF2_OnConditionAdded forward
+ *
+ * @param client 	An integer.
+ * @return
+ */
+native void SetTauntAttackSpeed(int client, float value);
+
+/**
+ * Removes the taunt gesture speed on client
+ *
+ * @param client 	An integer.
+ * @return
+ */
+native void RemoveGestureSpeed(int client);
+
+/**
+ * Removes the voice pitch on client
+ *
+ * @param client 	An integer.
+ * @return
+ */
+native void RemoveVoicePitch(int client);
 ```
 These natives can be used to set/remove taunt speeds on client
 
