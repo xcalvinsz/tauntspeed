@@ -2,7 +2,30 @@
   #endinput
 #endif
 #define _tauntspeed_included_
+
+public SharedPlugin __pl_tauntspeed = 
+{
+	name = "tauntspeed",
+	file = "tauntspeed.smx",
+#if defined REQUIRE_PLUGIN
+	required = 1,
+#else
+	required = 0,
+#endif
+};
  
+#if !defined REQUIRE_PLUGIN
+public void __pl_tauntspeed_SetNTVOptional()
+{
+	MarkNativeAsOptional("SetGestureSpeed");
+	MarkNativeAsOptional("SetVoicePitch");
+	MarkNativeAsOptional("SetTauntAttackSpeed");
+	MarkNativeAsOptional("SetGestureSpeed");
+	MarkNativeAsOptional("RemoveGestureSpeed");
+	MarkNativeAsOptional("RemoveVoicePitch");
+}
+#endif
+
 /**
  * Sets the taunt gesture speed on client
  *

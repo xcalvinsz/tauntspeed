@@ -1,6 +1,6 @@
 #pragma semicolon 1
 
-#define PLUGIN_VERSION "2.1"
+#define PLUGIN_VERSION "2.2"
 #define MAX_STRING_LENGTH 2048	//max string length for keyvalue string, if for some reason you run out of space then increase this value
 #define ATTRIBUTE_GESTURE 201
 #define ATTRIBUTE_VOICE 2048
@@ -81,6 +81,9 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("SetTauntAttackSpeed", Native_SetTauntAttackSpeed);
 	CreateNative("RemoveGestureSpeed", Native_RemoveGestureSpeed);
 	CreateNative("RemoveVoicePitch", Native_RemoveVoicePitch);
+	
+	RegPluginLibrary("tauntspeed");
+	
 	return APLRes_Success;
 }
 
