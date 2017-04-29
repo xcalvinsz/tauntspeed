@@ -1,15 +1,32 @@
-#pragma semicolon 1
+/*  TF2 Taunt Speed Modifier
+ *
+ *  Copyright (C) 2017 Calvin Lee (Chaosxk)
+ * 
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) 
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT 
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with 
+ * this program. If not, see http://www.gnu.org/licenses/.
+ */
 
-#define PLUGIN_VERSION "2.2"
-#define MAX_STRING_LENGTH 2048	//max string length for keyvalue string, if for some reason you run out of space then increase this value
-#define ATTRIBUTE_GESTURE 201
-#define ATTRIBUTE_VOICE 2048
+#pragma semicolon 1
 
 #include <tf2>
 #include <tf2attributes>
 #include <morecolors>
 
 #pragma newdecls required
+
+#define PLUGIN_VERSION "2.2"
+#define MAX_STRING_LENGTH 2048	//max string length for keyvalue string, if for some reason you run out of space then increase this value
+#define ATTRIBUTE_GESTURE 201
+#define ATTRIBUTE_VOICE 2048
 
 ConVar g_cEnabled, g_cFlag, g_cSpeed, g_cTauntAttack, g_cVoice;
 int g_iOffset;
