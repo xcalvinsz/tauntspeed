@@ -13,7 +13,7 @@ Requires Sourcemod 1.8+ and Metamod 1.10+
 
 ## Convar settings
 ```
-sm_tauntspeed_enabled - [1/0] - Enables/Disables Taunt Speed Modifier
+sm_tauntspeed_enabled - Enables/Disables Taunt Speed Modifier
 sm_tauntspeed_flag - Enable taunt speed on players with the given flag [0 - OFF, 1 - PUBLIC, FLAG (https://wiki.alliedmods.net/Adding_Admins_(SourceMod)#Levels)]
 sm_tauntspeed_speed - The speed of taunt if player has the flag given in sm_tauntspeed_flag
 sm_tauntspeed_attack - Allow taunt attack timing to be changed with the taunt speed
